@@ -236,6 +236,15 @@ comes
 "pat", "patty", "patriarch": forces the patriarch boss to spawn if/when the
 boss wave comes
 
+"kfp", "kingfp", "kingfleshpound": forces the king fleshpound boss to spawn if/when the
+boss wave comes
+
+"kb", "kingbloat", "abom", "abomination": forces the abomination boss to spawn if/when the
+boss wave comes
+
+"mat", "matriarch": forces the matriarch boss to spawn if/when the
+boss wave comes
+
 "random" or "unmodded": choose a random boss when the time comes (unmodded
 game behavior)
 
