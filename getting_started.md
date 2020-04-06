@@ -3,7 +3,7 @@
 
 Just want to jump into CD solo?  Here's how:
 
-1. Subscribe to the [Steam Workshop item](https://steamcommunity.com/sharedfiles/itemedittext/?id=2050357684).
+1. Subscribe to the [Steam Workshop item](https://steamcommunity.com/sharedfiles/filedetails/?id=2050370803).
 
 1. Start KF2.  If KF2 was running when you subscribed, then restart KF2.
 
