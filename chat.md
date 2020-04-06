@@ -26,7 +26,7 @@ However, a user whose SteamID is listed in any of one or more optional `Authoriz
 Here's a config snippet illustrating how `DefaultAuthLevel=CDAUTH_READ` works with `AuthorizedUsers`.  This snippet authorizes two users to run any chat command.  Anyone besides the two listed users can run chat commands that read the configuration, but not those that would modify it.
 
 ```
-[ControlledDifficulty.CD_Survival]
+[ControlledDifficulty_Blackout.CD_Survival]
 DefaultAuthLevel=CDAUTH_READ
 AuthorizedUsers=(SteamID="STEAM_0:0:3691909",Comment="blackout")
 AuthorizedUsers=(SteamID="STEAM_0:0:11101",Comment="gabe newell")

@@ -3,7 +3,7 @@
 The following options live in the following **KFGame.ini** section:
 
 ```
-[ControlledDifficulty.CD_PlayerController]
+[ControlledDifficulty_Blackout.CD_PlayerController]
 ```
 
 These options control preferences and visual tweaks that are

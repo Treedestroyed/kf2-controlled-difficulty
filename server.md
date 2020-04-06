@@ -6,11 +6,11 @@
 
    https://wiki.tripwireinteractive.com/index.php?title=Dedicated_Server_(Killing_Floor_2)
 
-1. **Copy ControlledDifficulty.u**
+1. **Copy ControlledDifficulty_Blackout.u**
 
    Copy ControlledDifficulty_Blackout.u into `<KF2 Server Root>\KFGame\BrewedPC\Script\`.
    
-   The easiest way to get ControlledDifficulty.u is to subscribe to CD's workshop item on your client machine, start KF2 once to force the workshop to download it, then recursively search in `<My Documents>\My Games\KillingFloor2\KFGame\Cache` for ControlledDifficulty_Blackout.u.
+   The easiest way to get ControlledDifficulty_Blackout.u is to subscribe to CD's workshop item on your client machine, start KF2 once to force the workshop to download it, then recursively search in `<My Documents>\My Games\KillingFloor2\KFGame\Cache` for ControlledDifficulty_Blackout.u.
    
 1. **Edit KF2Server.bat**
 

@@ -40,7 +40,7 @@ are constants in CD.  So think of the difficulty
 comparison as very loose and approximate.
 
 ```
-[ControlledDifficulty.CD_Survival]
+[ControlledDifficulty_Blackout.CD_Survival]
 ; You can use any SpawnCycle, but these tips were written
 ; with SpawnCycle=unmodded, SpawnCycle=nam_pro_v3,
 ; SpawnCycle=basic_moderate, or SpawnCycle=basic_heavy in mind
@@ -90,7 +90,7 @@ Here's a configuration that's substantiall more intense than
 vanilla HOE, but still plausibly beatable with a 6-man team.
 
 ```
-[ControlledDifficulty.CD_Survival]
+[ControlledDifficulty_Blackout.CD_Survival]
 ; You can use any SpawnCycle, but these tips were written
 ; with SpawnCycle=unmodded, SpawnCycle=nam_pro_v3,
 ; SpawnCycle=basic_moderate, or SpawnCycle=basic_heavy in mind
@@ -123,7 +123,7 @@ This is just a theoretical exercise -- **not recommended** for
 ordinary 6-man team play.
 
 ```
-[ControlledDifficulty.CD_Survival]
+[ControlledDifficulty_Blackout.CD_Survival]
 ; You can use any SpawnCycle, but these tips were written
 ; with SpawnCycle=unmodded, SpawnCycle=nam_pro_v3,
 ; SpawnCycle=basic_moderate, or SpawnCycle=basic_heavy in mind
@@ -154,7 +154,7 @@ on hillside).  It's comparable to vanilla HOE, and probably even a
 bit easier than that.
 
 ```
-[ControlledDifficulty.CD_Survival]
+[ControlledDifficulty_Blackout.CD_Survival]
 ; Use whatever SpawnCycle suits you
 SpawnCycle=basic_moderate ; change if desired
 ; Leave SpawnMod=0 and tune the other settings below
@@ -246,7 +246,7 @@ made easier to keep the configuration neutral.
 Recommended:
 
 ```
-[ControlledDifficulty.CD_Survival]
+[ControlledDifficulty_Blackout.CD_Survival]
 WeaponTimeout=max ; weapons dropped on the ground won't disappear
 ZedsTeleportCloser=false ; zeds don't teleport closer to players
 ```

@@ -61,7 +61,7 @@ To control this feature, set `SpawnCycle=<some_value>` on your `open` command wh
 For example, this command would load `KF-Hillside-B4` with the `SpawnCycle` preset named `basic_moderate`:
 
 ```
-open KF-Hillside-B4?game=ControlledDifficulty.CD_Survival?SpawnCycle=basic_moderate
+open KF-Hillside-B4?game=ControlledDifficulty_Blackout.CD_Survival?SpawnCycle=basic_moderate
 ```
 
 Some commands are available to display information about spawn cycles.
@@ -82,7 +82,7 @@ Some commands are available to display information about spawn cycles.
 
 ## INI Configuration Syntax
 
-When `SpawnCycle=ini` is specified on CD's `open` command, CD looks for `SpawnCycleDefs` lines in KFGame.ini's `[ControlledDifficulty.CD_Survival]` section.  `SpawnCycleDefs` can only appear in `KFGame.ini` under this section.  There is no way to specify `SpawnCycleDefs` in the `open` command.  This makes `SpawnCycle=ini` currently the only aspect of CD that requires manual config editing to use.
+When `SpawnCycle=ini` is specified on CD's `open` command, CD looks for `SpawnCycleDefs` lines in KFGame.ini's `[ControlledDifficulty_Blackout.CD_Survival]` section.  `SpawnCycleDefs` can only appear in `KFGame.ini` under this section.  There is no way to specify `SpawnCycleDefs` in the `open` command.  This makes `SpawnCycle=ini` currently the only aspect of CD that requires manual config editing to use.
 
 The first `SpawnCycleDefs` that appears in `KFGame.ini` controls Wave 1, the second controls Wave 2, etc.  The number of `SpawnCycleDefs` must match the game length or an error message will be printed at game startup and CD will revert to unmodded spawn behavior.
 
@@ -167,7 +167,7 @@ The following `KFGame.ini` snippet reflects the `basic_moderate` preset.  This c
 Here are some charts visualizing how the preset's big zeds and husks are distributed: http://imgur.com/a/oKVmS
 
 ```
-[ControlledDifficulty.CD_Survival]
+[ControlledDifficulty_Blackout.CD_Survival]
 SpawnCycle=ini
 SpawnCycleDefs=4CY,3CY_1AL_1GF,6SL,4CY_1BL,3AL_1SL,4CY,3CY_1AL_1GF,4CY_1BL,3AL_1SL
 SpawnCycleDefs=3CY_1AL,3CY_1SL_1BL,2CR,2ST,4CY_1BL_2GF,1HU,1SL_2AL_1GF,2AL_2GF,3CY_1AL_1GF,4CY,4CR,3CY_1AL,3CY_1SL_1BL,2CR,2ST,1HU,1SL_2AL_1GF,2AL_2GF,3CY_1AL_1GF,4CY,4CR

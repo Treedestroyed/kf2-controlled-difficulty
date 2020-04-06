@@ -8,13 +8,13 @@ CD's options (also known interchangeably as settings) can be configured three wa
 
 #### Configuring CD via `open`
 
-Whenever you invoke `open <map>?game=ControlledDifficulty.CD_Survival`,
+Whenever you invoke `open <map>?game=ControlledDifficulty_Blackout.CD_Survival`,
 you may append additional "?"-separated key-value pairs of CD setting
 names and their values.
 
 For example, to set CohortSize to 6 and SpawnPoll to 0.75 on Outpost:
 
-`open KF-Outpost?game=ControlledDifficulty.CD_Survival?SpawnPoll=0.75?CohortSize=6` 
+`open KF-Outpost?game=ControlledDifficulty_Blackout.CD_Survival?SpawnPoll=0.75?CohortSize=6` 
 
 #### Configuring CD through INI files
 
@@ -374,7 +374,7 @@ AuthorizedUsers.
 Here's a sample INI snippet would authorize CD's author and Gabe Newell.
 
 ```
-  [ControlledDifficulty.CD_Survival]
+  [ControlledDifficulty_Blackout.CD_Survival]
   DefaultAuthLevel=CDAUTH_READ
   AuthorizedUsers=(SteamID="STEAM_0:0:3691909",Comment="blackout")
   AuthorizedUsers=(SteamID="STEAM_0:0:11101",Comment="gabe newell")

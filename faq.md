@@ -9,12 +9,12 @@ There is significant feature overlap, though some things are unique on each side
 
 No.  CD does not alter any files in your KF2 installation.  CD does not affect solo games that you start through the ordinary KF2 graphical user interface, and CD does not affect vanilla multiplayer games that you join.
 
-CD's code is contained entirely in one file, `ControlledDifficulty.u`.  This file is downloaded into `<My Documents>\My Games\KillingFloor2\KFGame\Cache` when you subscribe to CD on the workshop or join a CD-enabled dedicated server.  However, even when this file is present, it is normally inactive and its contents are not loaded.  CD can only be loaded deliberately, by either starting a solo game using the `open <mapname>?Game=ControlledDifficulty.CD_Survival` console command (as described in [getting_started.md](getting_started.md)), or by joining a dedicated server running CD.  CD is automatically unloaded when you leave a CD-enabled game.
+CD's code is contained entirely in one file, `ControlledDifficulty_Blackout.u`.  This file is downloaded into `<My Documents>\My Games\KillingFloor2\KFGame\Cache` when you subscribe to CD on the workshop or join a CD-enabled dedicated server.  However, even when this file is present, it is normally inactive and its contents are not loaded.  CD can only be loaded deliberately, by either starting a solo game using the `open <mapname>?Game=ControlledDifficulty_Blackout.CD_Survival` console command (as described in [getting_started.md](getting_started.md)), or by joining a dedicated server running CD.  CD is automatically unloaded when you leave a CD-enabled game.
 
 CD will save some of its settings to pair of separate subsections in your KFGame.ini file.  These sections are:
 
-* `[ControlledDifficulty.CD_Survival]`
-* `[ControlledDifficulty.CD_PlayerController]`
+* `[ControlledDifficulty_Blackout.CD_Survival]`
+* `[ControlledDifficulty_Blackout.CD_PlayerController]`
 
 By saving its settings to only these sections, CD avoids touching settings that affect the vanilla game.
 
