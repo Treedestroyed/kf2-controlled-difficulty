@@ -18,3 +18,7 @@ Just want to jump into CD solo?  Here's how:
    ```
    open Outpost?game=ControlledDifficulty.CD_Survival?CohortSize=8?SpawnPoll=2.0?WaveSizeFakes=2
    ```
+Configuration: 
+   ```
+   YourPC:\Documents\My Games\KillingFloor2\KFGame\Config\ControlledDifficulty_Blackout.ini
+   ```
