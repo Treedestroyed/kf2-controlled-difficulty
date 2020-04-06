@@ -4,7 +4,7 @@ A modification by blackout for Tripwire interactive's "Killing Floor 2".
 Offers precise control over the game's difficulty,
 including configurations much harder than Tripwire's top-end Hell on Earth difficulty.
 
-**Steam Workshop:** http://steamcommunity.com/sharedfiles/filedetails/?id=738484519
+**Steam Workshop:** http://steamcommunity.com/sharedfiles/filedetails/?id=2050370803
 
 ## Quick Start
 
