@@ -5,7 +5,7 @@
 class CD_DS_ClotAlpha_Regular extends KFDifficulty_ClotAlpha
 	abstract;
 
-static function float GetSpecialAlphaChance( KFGameReplicationInfo KFGRI )
+static function float GetSpecialSpawnChance(KFGameReplicationInfo KFGRI)
 {
 	return 0.f;
 }

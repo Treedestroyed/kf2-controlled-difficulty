@@ -35,7 +35,7 @@ function bool GetChatWriteCommand( out StructChatCommand scc )
 defaultproperties
 {
 	OptionName="TraderTime"
-	DefaultSettingIndicator="0"
+	DefaultSettingIndicator="12"
 
 	ChatCommandNames=("!cdtradertime")
 }

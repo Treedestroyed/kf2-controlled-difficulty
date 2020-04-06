@@ -1,12 +1,11 @@
 //=============================================================================
-// CD_DS_Gorefast_Special
-// Sets the special spawnchance to one on all difficulties (always 2 blades)
+// CD_DS_Husk_Regular
+// Sets the special spawnchance to zero on all difficulties (always husk)
 //=============================================================================
-class CD_DS_Gorefast_Special extends KFDifficulty_Gorefast
+class CD_DS_Husk_Regular extends KFDifficulty_Husk
 	abstract;
 
 static function float GetSpecialSpawnChance(KFGameReplicationInfo KFGRI)
 {
-	return 1.f;
+	return 0.f;
 }
-

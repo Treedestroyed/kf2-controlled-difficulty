@@ -1,12 +1,11 @@
 //=============================================================================
-// CD_DS_Gorefast_Special
-// Sets the special spawnchance to one on all difficulties (always 2 blades)
+// CD_DS_Stalker_Regular
+// Sets the special spawnchance to zero on all difficulties
 //=============================================================================
-class CD_DS_Gorefast_Special extends KFDifficulty_Gorefast
+class CD_DS_Stalker_Regular extends KFDifficulty_Stalker
 	abstract;
 
 static function float GetSpecialSpawnChance(KFGameReplicationInfo KFGRI)
 {
-	return 1.f;
+	return 0.f;
 }
-

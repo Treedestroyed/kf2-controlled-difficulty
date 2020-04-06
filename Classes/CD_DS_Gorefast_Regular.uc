@@ -5,7 +5,7 @@
 class CD_DS_Gorefast_Regular extends KFDifficulty_Gorefast
 	abstract;
 
-static function float GetSpecialGorefastChance( KFGameReplicationInfo KFGRI )
+static function float GetSpecialSpawnChance(KFGameReplicationInfo KFGRI)
 {
 	return 0.f;
 }

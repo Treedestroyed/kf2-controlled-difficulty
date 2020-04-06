@@ -13,3 +13,8 @@ simulated event PostBeginPlay()
 		SpecialMoveHandler.SpecialMoveClasses[SM_Rally] = class'CD_AlphaRally_NoGlitter';
 	}
 }
+
+defaultproperties
+{
+	ElitePawnClass.Empty
+}
