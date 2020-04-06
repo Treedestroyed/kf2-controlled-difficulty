@@ -11,11 +11,11 @@ var config int ChatLineThreshold;
 
 var config bool ClientLogging;
 
-
+var bool bIsReadyForNextWave;
 
 var CD_ConsolePrinter Client_CDCP;
 
-var const string CDEchoMessageColor;
+var string CDEchoMessageColor;
 
 /* CD introduces custom alpha and crawler zed classes to
    control albinism.  KF2's zed kill count (displayed at
@@ -24,11 +24,11 @@ var const string CDEchoMessageColor;
    subclasses like their parent classes for the purposes
    of zed kill tracking.
 */
-function AddZedKill( class<KFPawn_Monster> MonsterClass, byte Difficulty, class<DamageType> DT )
+function AddZedKill( class<KFPawn_Monster> MonsterClass, byte Difficulty, class<DamageType> DT, bool bKiller )
 {
 	MonsterClass = class'CD_ZedNameUtils'.static.CheckMonsterClassRemap( MonsterClass, "CD_PlayerController.AddZedKill", ClientLogging );
 
-	super.AddZedKill( MonsterClass, Difficulty, DT );
+	super.AddZedKill( MonsterClass, Difficulty, DT, bKiller );
 }
 
 simulated event PostBeginPlay()
@@ -53,6 +53,7 @@ simulated event PostBeginPlay()
 	}
 
 	AlphaGlitterBool = bool( AlphaGlitter );
+	
 }
 
 reliable client event TeamMessage( PlayerReplicationInfo PRI, coerce string S, name Type, optional float MsgLifeTime  )
@@ -64,6 +65,7 @@ reliable client event TeamMessage( PlayerReplicationInfo PRI, coerce string S, n
 	// Messages from CD bypass the usual chat display code
 	if ( PRI == None && S != "" && Type == 'CDEcho' )
 	{
+
 		// Log a copy of this message to the client's console;
 		// this happens regardless of what menu state the client is in (lobby, postgame, action)
 		LocalPlayer(Player).ViewportClient.ViewportConsole.OutputText("[ControlledDifficulty Server Message]\n  " $ Repl(S, "\n", "\n  "));
@@ -129,6 +131,7 @@ reliable client event TeamMessage( PlayerReplicationInfo PRI, coerce string S, n
 
 defaultproperties
 {
-	MatchStatsClass=class'ControlledDifficulty.CD_EphemeralMatchStats'
+	MatchStatsClass=class'ControlledDifficulty_Blackout.CD_EphemeralMatchStats'
+	bIsReadyForNextWave=false
 	CDEchoMessageColor="00DCCE"
 }

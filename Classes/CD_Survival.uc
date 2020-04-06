@@ -3,8 +3,11 @@
 //=============================================================================
 // Survival with less bullshit
 //=============================================================================
+// Because vanilla Survival sucks
+//=============================================================================
 
-class CD_Survival extends KFGameInfo_Survival;
+class CD_Survival extends KFGameInfo_Survival
+	config( ControlledDifficulty_Blackout );
 
 `include(CD_BuildInfo.uci)
 `include(CD_Log.uci)
@@ -34,7 +37,8 @@ enum ECDBossChoice
 	CDBOSS_VOLTER,
 	CDBOSS_PATRIARCH,
 	CDBOSS_KINGFLESHPOUND,
-	CDBOSS_KINGBLOAT
+	CDBOSS_KINGBLOAT,
+	CDBOSS_MATRIARCH
 };
 
 enum ECDAuthLevel
@@ -52,7 +56,6 @@ struct StructAuthorizedUsers
 ////////////////////
 // Config options //
 ////////////////////
-
 
 //
 // ### Spawn Intensity Settings
@@ -247,6 +250,22 @@ var bool AlbinoAlphasBool;
 var config string AlbinoGorefasts;
 var bool AlbinoGorefastsBool;
 
+// #### AlbinoStalkers
+//
+// Controls whether albino stalkers can spawn.
+//
+// See AlbinoAlphas for details about exactly how this works.
+var config string AlbinoStalkers;
+var bool AlbinoStalkersBool;
+
+// #### AlbinoHusks
+//
+// Controls whether albino husks can spawn.
+//
+// See AlbinoAlphas for details about exactly how this works.
+var config string Albinohusks;
+var bool AlbinoHusksBool;
+
 // #### Boss
 //
 // Optionally controls which boss spawns, if and when the boss wave arrives.
@@ -351,6 +370,15 @@ var config string FleshpoundHPFakes;
 var config const array<string> FleshpoundHPFakesDefs;
 var int FleshpoundHPFakesInt;
 
+// #### QuarterPoundHPFakes
+//
+// The fakes modifier applied when scaling quarterpound head and body health.
+//
+// This is affected by FakesMode.
+var config string QuarterPoundHPFakes;
+var config const array<string> QuarterPoundHPFakesDefs;
+var int QuarterPoundHPFakesInt;
+
 // #### ScrakeHPFakes
 //
 // The fakes modifier applied when scaling scrake head and body health.
@@ -414,12 +442,13 @@ var int TrashHPFakesInt;
 // Newell.
 //
 // ```
-//   [ControlledDifficulty.CD_Survival]
+//   [ControlledDifficulty_Blackout.CD_Survival]
 //   DefaultAuthLevel=CDAUTH_READ
 //   AuthorizedUsers=(SteamID="STEAM_0:0:3691909",Comment="blackout")
 //   AuthorizedUsers=(SteamID="STEAM_0:0:11101",Comment="gabe newell")
 // ```
 var config array<StructAuthorizedUsers> AuthorizedUsers;
+var array<StructAuthorizedUsers> Moderator;
 
 // #### DefaultAuthLevel
 //
@@ -437,10 +466,32 @@ var config array<StructAuthorizedUsers> AuthorizedUsers;
 // and anonymous users with CDAUTH_WRITE.
 var config ECDAuthLevel DefaultAuthLevel;
 
-
 //
 // ### Miscellaneous Settings
 //
+
+// #### AutoPause
+//
+// True will enable automatic trader time pause intended for use in conjunction
+// with cdready and cdunready commands. 
+// AutoPause occurs at the time specified by TraderTime.
+// False will disable autopause
+var config string AutoPause;
+var bool bAutoPause;
+
+// ####
+// 
+// True counts headshot stats per per pellet (eg AF2011's count 2 headshots per hit if both pellets hit the head)
+// this is technically the most accurate setting, and what gameconductor uses.
+// If set to False cdmystats counts headshots per shot fired like the game awards screen uses.
+var config string CountHeadshotsPerPellet;
+var bool bCountHeadshotsPerPellet;
+
+// #### EnableReadySystem
+//
+// Toggles ready system functionality.
+var config string EnableReadySystem;
+var bool bEnableReadySystem;
 
 // #### TraderTime
 //
@@ -448,6 +499,12 @@ var config ECDAuthLevel DefaultAuthLevel;
 // totally ignored, and the difficulty's standard trader time is used instead.
 var config string TraderTime;
 var int TraderTimeInt;
+
+// #### WaveEndSummaries
+//
+// used to toggle the display of wave-end summaries
+var config string WaveEndSummaries;
+var bool bWaveEndSummaries;
 
 // #### WeaponTimeout
 //
@@ -496,7 +553,6 @@ var bool ZedsTeleportCloserBool;
 // and its unusual name is retained today for backwards-compatibility.
 var config bool bLogControlledDifficulty;
 
-
 ////////////////////////////////////////////////////////////////
 // Internal runtime state (no config options below this line) //
 ////////////////////////////////////////////////////////////////
@@ -505,6 +561,7 @@ var CD_DynamicSetting BossHPFakesSetting;
 var CD_DynamicSetting CohortSizeSetting;
 var CD_DynamicSetting WaveSizeFakesSetting;
 var CD_DynamicSetting FleshpoundHPFakesSetting;
+var CD_DynamicSetting QuarterPoundHPFakesSetting;
 var CD_DynamicSetting MaxMonstersSetting;
 var CD_DynamicSetting SpawnPollSetting;
 var CD_DynamicSetting ScrakeHPFakesSetting;
@@ -517,11 +574,17 @@ var array<CD_DynamicSetting> DynamicSettings;
 var CD_BasicSetting AlbinoAlphasSetting;
 var CD_BasicSetting AlbinoCrawlersSetting;
 var CD_BasicSetting AlbinoGorefastsSetting;
+var CD_BasicSetting AlbinoStalkersSetting;
+var CD_BasicSetting AlbinoHusksSetting;
+var CD_BasicSetting AutoPauseSetting;
 var CD_BasicSetting BossSetting;
+var CD_BasicSetting CountHeadshotsPerPelletSetting;
 var CD_BasicSetting FakesModeSetting;
 var CD_BasicSetting FleshpoundRageSpawnsSetting;
 var CD_BasicSetting SpawnCycleSetting;
 var CD_BasicSetting TraderTimeSetting;
+var CD_BasicSetting EnableReadySystemSetting;
+var CD_BasicSetting	WaveEndSummariesSetting;
 var CD_BasicSetting WeaponTimeoutSetting;
 var CD_BasicSetting ZedsTeleportCloserSetting;
 var CD_BasicSetting ZTSpawnModeSetting;
@@ -532,6 +595,8 @@ var array<CD_Setting> AllSettings;
 
 // SpawnCycle parsed out of the SpawnCycleDefs strings
 var array<CD_AIWaveInfo> IniWaveInfos;
+
+var array<sGameMode> CDGameModes;
 
 // Whether SpawnCycleDefs has been parsed into IniWaveInfos
 var bool AlreadyLoadedIniWaveInfos;
@@ -562,6 +627,8 @@ var int PausedRemainingMinute;
 
 var CD_ChatCommander ChatCommander;
 
+var CD_StatsSystem StatsSystem;
+
 var int DebugExtraProgramPlayers;
 
 var string DynamicSettingsBulletin;
@@ -574,6 +641,8 @@ delegate bool StringReferencePredicate( const out string value );
 event InitGame( string Options, out string ErrorMessage )
 {
  	Super.InitGame( Options, ErrorMessage );
+	
+	GameModes = CDGameModes;
 
 	SpawnCycleCatalog = new class'CD_SpawnCycleCatalog';
 	SpawnCycleCatalog.Initialize( AIClassList, GameInfo_CDCP, bLogControlledDifficulty );
@@ -590,6 +659,7 @@ event InitGame( string Options, out string ErrorMessage )
 	ChatCommander = new(self) class'CD_ChatCommander';
 	ChatCommander.SetupChatCommands();
 
+	StatsSystem = new(self) class'CD_StatsSystem';
 	SaveConfig();
 }
 
@@ -637,22 +707,40 @@ private function SetupBasicSettings()
 
 	AlbinoGorefastsSetting = new(self) class'CD_BasicSetting_AlbinoGorefasts';
 	RegisterBasicSetting( AlbinoGorefastsSetting );
-
+	
+	AlbinoStalkersSetting = new(self) class'CD_BasicSetting_AlbinoStalkers';
+	RegisterBasicSetting( AlbinoStalkersSetting );
+	
+	AlbinoHusksSetting = new(self) class'CD_BasicSetting_AlbinoHusks';
+	RegisterBasicSetting( AlbinoHusksSetting );
+	
+	AutoPauseSetting = new(self) class'CD_BasicSetting_AutoPause';
+	RegisterBasicSetting( AutoPauseSetting );
+	
 	BossSetting = new(self) class'CD_BasicSetting_Boss';
 	RegisterBasicSetting( BossSetting );
 
+	CountHeadshotsPerPelletSetting = new(self) class'CD_BasicSetting_CountHeadshotsPerPellet';
+	RegisterBasicSetting( CountHeadshotsPerPelletSetting );
+	
 	FakesModeSetting = new(self) class'CD_BasicSetting_FakesMode';
 	RegisterBasicSetting( FakesModeSetting );
 
 	FleshpoundRageSpawnsSetting = new(self) class'CD_BasicSetting_FleshpoundRageSpawns';
 	RegisterBasicSetting( FleshpoundRageSpawnsSetting );
 
+	WaveEndSummariesSetting = new(self) class'CD_BasicSetting_WaveEndSummaries';
+	RegisterBasicSetting( WaveEndSummariesSetting );
+	
 	SpawnCycleSetting = new(self) class'CD_BasicSetting_SpawnCycle';
 	RegisterBasicSetting( SpawnCycleSetting );
 
 	TraderTimeSetting = new(self) class'CD_BasicSetting_TraderTime';
 	RegisterBasicSetting( TraderTimeSetting );
 
+	EnableReadySystemSetting = new(self) class'CD_BasicSetting_EnableReadySystem';
+	RegisterBasicSetting( EnableReadySystemSetting );
+	
 	WeaponTimeoutSetting = new(self) class'CD_BasicSetting_WeaponTimeout';
 	RegisterBasicSetting( WeaponTimeoutSetting );
 
@@ -697,6 +785,10 @@ private function SetupDynamicSettings()
 	FleshpoundHPFakesSetting.IniDefsArray = FleshpoundHPFakesDefs;
 	RegisterDynamicSetting( FleshpoundHPFakesSetting );
 
+	QuarterPoundHPFakesSetting = new(self) class'CD_DynamicSetting_QuarterPoundHPFakes';
+	QuarterPoundHPFakesSetting.IniDefsArray = QuarterPoundHPFakesDefs;
+	RegisterDynamicSetting( QuarterPoundHPFakesSetting );
+	
 	TrashHPFakesSetting = new(self) class'CD_DynamicSetting_TrashHPFakes';
 	TrashHPFakesSetting.IniDefsArray = TrashHPFakesDefs;
 	RegisterDynamicSetting( TrashHPFakesSetting );
@@ -895,7 +987,10 @@ private function DisplayBriefWaveStatsInChat()
 
 	s = CD_SpawnManager( SpawnManager ).GetWaveAverageSpawnrate();
 
-	BroadcastCDEcho( "[CD - Wave " $ WaveNum $ " Recap]\n"$ s );
+	if(bWaveEndSummaries)
+	{
+		BroadcastCDEcho( "[CD - Wave " $ WaveNum $ " Recap]\n"$ s );
+	}
 }
 
 State TraderOpen
@@ -948,8 +1043,17 @@ private function string PauseTraderTime()
 
 	MyKFGRI.bStopCountDown = !MyKFGRI.bStopCountDown;
 
-	PausedRemainingTime = MyKFGRI.RemainingTime;
-	PausedRemainingMinute = MyKFGRI.RemainingMinute;
+	if (bAutoPause && MyKFGRI.RemainingTime >= 60)
+	{
+		PausedRemainingTime = 60;
+		PausedRemainingMinute = 0;
+	}
+	else
+	{
+		PausedRemainingTime = MyKFGRI.RemainingTime;
+		PausedRemainingMinute = MyKFGRI.RemainingMinute;
+	}
+	
 	ClearTimer( 'CloseTraderTimer' );
 	`cdlog("Killed CloseTraderTimer", bLogControlledDifficulty);
 
@@ -990,6 +1094,187 @@ private function string UnpauseTraderTime()
 	return "Unpaused Trader";
 }
 
+// called by command to set a players ready state to ready.
+// if the planets align and we deem them worthy to ready up, do it
+// otherwise this just spaffs the reason why we won't ready them. 
+//
+// Extra sass has been provided free of charge.
+private function ReadyUp(Actor Sender)
+{
+	local KFPlayerController KFPC;
+	local CD_PlayerController CDPC;
+	local name GameStateName;
+	GameStateName = GetStateName();
+	
+	KFPC = KFPlayerController(Sender);
+	CDPC = CD_PlayerController(Sender);
+	if (CDPC != none)
+	{
+		if (!bEnableReadySystem)
+		{
+			BroadCastCDEcho( "The Ready system is currently disabled." );
+		}
+		else
+		{
+			if ( GameStateName != 'TraderOpen' )
+			{
+				BroadCastCDEcho( "That command can only be used during trader time." );
+			}
+			else if ( !MyKFGRI.bStopCountDown )
+			{
+				BroadCastCDEcho( "Trader not paused, You can't ready up." );
+			}
+			else if (KFPC.PlayerReplicationInfo.bOnlySpectator)
+			{
+				BroadCastCDEcho( "Command not available to spectators.");
+			}
+			else if (CDPC.bIsReadyForNextWave)
+			{
+				BroadCastCDEcho( "We get it, you're ready." );
+			}
+			else
+			{
+				CDPC.bIsReadyForNextWave = true;
+				NotifyFHUDReadyState(CDPC);
+				BroadCastCDEcho( KFPC.PlayerReplicationInfo.PlayerName $ " has readied up." );
+				if( bAllPlayersAreReady() )
+				{
+					BroadCastCDEcho( "All Players are ready. Unpausing Trader." );
+					UnpauseTraderTime();
+				}
+			}
+		}
+	}
+}
+
+
+// sets the ready state to false for the sent actor if they should be able to,
+// otherwise spaffs the reason why we won't unready them. 
+//
+// Extra sass has been provided free of charge.
+private function Unready(Actor Sender)
+{
+	local KFPlayerController KFPC;
+	local CD_PlayerController CDPC;
+	local name GameStateName;
+	GameStateName = GetStateName();
+
+	KFPC = KFPlayerController(Sender);
+	CDPC = CD_PlayerController(Sender);
+	
+	if (CDPC != none)
+	{
+		if (!bEnableReadySystem)
+		{
+			BroadCastCDEcho( "The Ready system is currently disabled." );
+		}
+		else
+		{
+		
+			if ( GameStateName != 'TraderOpen' )
+			{
+				BroadCastCDEcho( "That command can only be used during trader time." );
+			}
+			else if (KFPC.PlayerReplicationInfo.bOnlySpectator)
+			{
+				BroadCastCDEcho( "Command not available to spectators.");
+			}
+			else if (!CDPC.bIsReadyForNextWave)
+			{
+				BroadCastCDEcho( "You were not ready to begin with." );
+			}
+			else if (WorldInfo.NetMode != NM_StandAlone && MyKFGRI.RemainingTime <= 5)
+			{
+				BroadCastCDEcho( "Unready requires at least 5 seconds remaining." );
+			}
+			else
+			{
+				CDPC.bIsReadyForNextWave = false;
+				NotifyFHUDReadyState(CDPC);
+				BroadCastCDEcho( KFPC.PlayerReplicationInfo.PlayerName $ " has unreadied." );
+				if ( !MyKFGRI.bStopCountDown )
+				{
+					PauseTraderTime();
+					BroadCastCDEcho("Countdown AutoPaused.");
+				}
+			}
+		}
+	}
+}
+
+// Tallies up players and returns true if all non-spectators are ready
+private function bool bAllPlayersAreReady()
+{
+    local KFPlayerController KFPC;
+	local CD_PlayerController CDPC;
+    local int TotalPlayerCount;
+    local int SpectatorCount;
+    local int ReadyCount;
+	
+	TotalPlayerCount = 0;
+	SpectatorCount = 0;
+	ReadyCount = 0;
+	
+    foreach WorldInfo.AllControllers(class'KFPlayerController', KFPC)
+	{
+        CDPC = CD_PlayerController(KFPC);
+		
+		if (CDPC != none)
+		{
+		
+			if ( !KFPC.bIsPlayer || KFPC.bDemoOwner )
+			{
+				continue;
+			}
+			else
+			{
+				TotalPlayerCount++;
+			}		       
+			if ( KFPC.PlayerReplicationInfo.bOnlySpectator )
+			{
+				SpectatorCount++;
+			}
+			else if ( CDPC.bIsReadyForNextWave && !KFPC.PlayerReplicationInfo.bOnlySpectator)
+			{
+				ReadyCount++;
+			}
+		}
+    }
+	
+    if (TotalPlayerCount == ReadyCount + SpectatorCount)
+	{
+		return true;
+    }
+	else
+	{
+		return false;
+	}
+}
+
+// sets all ReadySystem states for all non-spectators to unready when called
+private function UnreadyAllPlayers()
+{
+	local KFPlayerController KFPC;
+	local CD_PlayerController CDPC;
+	
+	foreach WorldInfo.AllControllers(class'KFPlayerController', KFPC)
+	{
+		if ( KFPC.bIsPlayer && !KFPC.PlayerReplicationInfo.bOnlySpectator && !KFPC.bDemoOwner )
+		{
+			CDPC = CD_PlayerController(KFPC);
+			if (CDPC != none)
+			{
+				CDPC.bIsReadyForNextWave = false;
+				NotifyFHUDReadyState(CDPC);
+			}
+		}
+	}
+	
+	BroadcastCDEcho( "Type \"!cdready\" or \"!cdr\" to ready up for the next wave." );
+}
+
+
+
 /* 
  * We override PreLogin to disable a comically overzealous
  * GameMode integrity check added in v1046 or v1048 (not
@@ -1019,35 +1304,7 @@ event PreLogin(string Options, string Address, const UniqueNetId UniqueId, bool 
 		return;
 	}
 
-//	// Check against what is expected from the client in the case of quick join/server browser. The server settings can change from the time the server gets the properties from the backend
-//	if( WorldInfo.NetMode == NM_DedicatedServer && !HasOption( Options, "bJoinViaInvite" ) )
-//	{
-//		DesiredDifficulty = ParseOption( Options, "Difficulty" );
-//		if( DesiredDifficulty != "" && int(DesiredDifficulty) != GameDifficulty )
-//		{
-//			`log("Got bad difficulty"@DesiredDifficulty@"expected"@GameDifficulty);
-//			ErrorMessage = "<Strings:KFGame.KFLocalMessage.ServerNoLongerAvailableString>";
-//			return;
-//		}
-//
-//		DesiredWaveLength = ParseOption( Options, "GameLength" );
-//		if( DesiredWaveLength != "" && int(DesiredWaveLength) != GameLength )
-//		{
-//			`log("Got bad wave length"@DesiredWaveLength@"expected"@GameLength);
-//			ErrorMessage = "<Strings:KFGame.KFLocalMessage.ServerNoLongerAvailableString>";
-//			return;
-//		}
-//
-//		DesiredGameMode = ParseOption( Options, "Game" );
-//		if( DesiredGameMode != "" && !(DesiredGameMode ~= GetFullGameModePath()) )
-//		{
-//			`log("Got bad wave length"@DesiredGameMode@"expected"@GetFullGameModePath());
-//			ErrorMessage = "<Strings:KFGame.KFLocalMessage.ServerNoLongerAvailableString>";
-//			return;
-//		}
-//	}
-
-
+	
 	bPerfTesting = ( ParseOption( Options, "AutomatedPerfTesting" ) ~= "1" );
 	bSpectator = bPerfTesting || ( ParseOption( Options, "SpectatorOnly" ) ~= "1" ) || ( ParseOption( Options, "CauseEvent" ) ~= "FlyThrough" );
 
@@ -1179,28 +1436,66 @@ final function int GetEffectivePlayerCount( int HumanPlayers )
 
 /*
  * Get the playercount applied to a specific zed's HP scaling.  This accounts
- * for FakesMode and whichever Boss/Fleshpound/Scrake/TrashHPFakes option is
+ * for FakesMode and whichever Boss/Fleshpound/Scrake/Quarterpound/TrashHPFakes option is
  * applicable.
+ *
+ * This was rewritten from blackout's version to require less evaluation and correctly apply
+ * BossHPFakes to Abomination and KingFleshpound while also adding QuarterPoundHPFakes.
  */
 final function int GetEffectivePlayerCountForZedType( KFPawn_Monster P, int HumanPlayers )
 {
 	local int FakeValue, EffectiveNumPlayers;
+	local string Zed;
+	Zed = string(P.LocalizationKey);
+	if ( P != none )
+	{
+		switch (Zed)
+		{	
+			// ---------- Bosses ----------
 
-	if ( None != KFPawn_MonsterBoss( P ) )
-	{
-		FakeValue = BossHPFakesInt;
-	}
-	else if ( None != KFPawn_ZedFleshpound( P ) )
-	{
-		FakeValue = FleshpoundHPFakesInt;
-	}
-	else if ( None != KFPawn_ZedScrake( P ) )
-	{
-		FakeValue = ScrakeHPFakesInt;
+			case "KFPawn_ZedFleshpoundKing":
+				FakeValue = BossHPFakesInt;
+				break;
+
+			case "KFPawn_ZedBloatKing":
+				FakeValue = BossHPFakesInt;
+				break;
+
+			case "KFPawn_ZedPatriarch":
+				FakeValue = BossHPFakesInt;
+				break;
+
+			case "KFPawn_ZedHans":
+				FakeValue = BossHPFakesInt;
+				break;
+				
+			case "KFPawn_ZedMatriarch":
+				FakeValue = BossHPFakesInt;
+				break;
+
+			// -------- Large Zeds --------
+
+			case "KFPawn_ZedFleshpound":
+				FakeValue = FleshpoundHPFakesInt;
+				break;
+
+			case "KFPawn_ZedScrake":
+				FakeValue = ScrakeHPFakesInt;
+				break;
+
+			case "KFPawn_ZedFleshpoundMini":
+				FakeValue = QuarterPoundHPFakesInt;
+				break;
+
+			// -------- Trash Zeds --------
+			
+			default:
+				FakeValue = TrashHPFakesInt;
+		}
 	}
 	else
 	{
-		FakeValue = TrashHPFakesInt;
+		`cdlog ("Warning - GetEffectivePlayerCountForZedType() was called for none.");
 	}
 
 	if ( FakesModeEnum == FPM_ADD )
@@ -1267,8 +1562,62 @@ event Broadcast(Actor Sender, coerce string Msg, optional name Type)
 
 	if ( Type == 'Say' )
 	{
-		ChatCommander.RunCDChatCommandIfAuthorized( Sender, Msg );
+		// Crappy workaround for the inability to pass Actor Sender with the rest of the commands due to casting to string. (Substantial rewrite required for this)
+		Msg = Locs(Msg);
+
+		if (Msg == "!cdready"||Msg == "!cdr")
+		{
+			ReadyUp(Sender);
+		}
+		else if ( Left( Msg, 8 ) == "!cdstats")				// this could probably be passed through chatcommander
+		{													// but I'm still debating gutting stats and making it a separate mutator
+			BroadcastCDEcho(StatsSystem.CDStatsCommand(Msg));
+		}
+		else if (Msg == "!cdunready" || Msg == "!cdur")
+		{
+			Unready(Sender);
+		}
+		else if (Msg == "!cdmystats" || Msg == "!cdms")
+		{
+			BroadcastCDEcho(StatsSystem.GetIndividualPlayerStats(Sender));
+		}
+		else if ( Left( Msg, 13 ) == "!cdallhpfakes" || Left( Msg, 7 ) == "!cdahpf" )   // hey this one doesn't really need an actor, I'm just being lazy at this point.
+		{			
+			SetAllHPFakes(Sender, Msg);
+		}
+		else if (Msg == "!cdmikepls" )													// this doesn't need an actor either -The Real LazyTiger
+		{
+			BroadcastCDEcho("GET SHIT ON");
+		}
+		else if (Msg == "!cdmig" )
+		{
+			BroadcastCDEcho("Machine is GOD!");
+		}
+		else
+		{
+			ChatCommander.RunCDChatCommandIfAuthorized( Sender, Msg );
+		}
 	}
+}
+
+// QoL command, sets all hp fakes at once with one chat command
+private function SetAllHPFakes(Actor Sender, string Msg)
+{
+	local array<string> params;
+	local string CommandString;
+	
+	ParseStringIntoArray( Msg, params, " ", true );
+	
+	CommandString = "!cdbhpf " $ params[1];
+	ChatCommander.RunCDChatCommandIfAuthorized( Sender, CommandString );
+	CommandString = "!cdfphpf " $ params[1];
+	ChatCommander.RunCDChatCommandIfAuthorized( Sender, CommandString );
+	CommandString = "!cdqphpf " $ params[1];
+	ChatCommander.RunCDChatCommandIfAuthorized( Sender, CommandString );
+	CommandString = "!cdschpf " $ params[1];
+	ChatCommander.RunCDChatCommandIfAuthorized( Sender, CommandString );
+	CommandString = "!cdthpf " $ params[1];
+	ChatCommander.RunCDChatCommandIfAuthorized( Sender, CommandString );
 }
 
 /*
@@ -1277,16 +1626,16 @@ event Broadcast(Actor Sender, coerce string Msg, optional name Type)
  * from the chat window and shown only in the client's console side, depending
  * on that client's configuration.
  */
-function BroadcastCDEcho( coerce string Msg )
+ 
+function BroadcastCDEcho( coerce string MsgStr )
 {
-        local PlayerController P;
-
-	// Skip the AllowsBroadcast check
-        
-        foreach WorldInfo.AllControllers(class'PlayerController', P)
-        {
-                BroadcastHandler.BroadcastText( None, P, Msg, 'CDEcho' );
-        }
+	local PlayerController PC;
+	
+	//	skips the allow broadcast check
+	foreach WorldInfo.AllControllers(class'PlayerController', PC)
+	{
+		BroadcastHandler.BroadcastText( None, PC, MsgStr, 'CDEcho' );
+	}
 }
 
 /*
@@ -1304,6 +1653,22 @@ function WaveEnded( EWaveEndCondition WinCondition )
 	if ( ApplyStagedConfig( CDSettingChangeMessage, "Staged settings applied:" ) )
 	{
 		BroadcastCDEcho( CDSettingChangeMessage );
+	}
+	
+	// AutoPause if it's enabled and game isn't over
+	if (bAutoPause && WinCondition != WEC_TeamWipedOut && WinCondition != WEC_GameWon )
+	{
+		BroadcastCDEcho( PauseTraderTime() );
+	}
+	// Prep Ready System if it's enabled and game isn't over
+	if (bEnableReadySystem && WinCondition != WEC_TeamWipedOut && WinCondition != WEC_GameWon )
+	{
+		UnreadyAllPlayers();
+	}
+	// dump stats to chatlog so they can be parsed.
+	if (WinCondition == WEC_TeamWipedOut || WinCondition == WEC_GameWon )
+	{
+		BroadcastCDEcho( StatsSystem.DumpToChatlog() );
 	}
 }
 
@@ -1334,6 +1699,7 @@ function SetMonsterDefaults( KFPawn_Monster P )
 	local float TotalSpeedMod, StartingSpeedMod;
 	local float DamageMod;
 	local int LivingPlayerCount;
+	local int i;
 
 	LivingPlayerCount = GetLivingPlayerCount();
 
@@ -1394,6 +1760,25 @@ function SetMonsterDefaults( KFPawn_Monster P )
 	P.ApplySpecialZoneHealthMod(HeadHealthMod);
 	P.GameResistancePct = CDDI.GetDamageResistanceModifierForZedType( P, LivingPlayerCount );
 
+	// look for special monster properties that have been enabled by the kismet node
+	for (i = 0; i < ArrayCount(SpawnedMonsterProperties); i++)
+	{
+		// this property is currently enabled
+		if (SpawnedMonsterProperties[i] != 0)
+		{
+			// do the action associated with that property
+			switch (EMonsterProperties(i))
+			{
+			case EMonsterProperties_Enraged:
+				P.SetEnraged(true);
+				break;
+			case EMonsterProperties_Sprinting:
+				P.bSprintOverride=true;
+				break;
+			}
+		}
+	}
+	
 	// debug logging
    	`log("==== SetMonsterDefaults for pawn: " @P @"====",bLogAIDefaults);
 	`log("HealthMod: " @HealthMod @ "Original Health: " @P.default.Health @" Final Health = " @P.Health, bLogAIDefaults);
@@ -1464,7 +1849,7 @@ function StartWave()
 
 private function DisplayWaveStartMessageInChat()
 {
-	BroadcastCDEcho( "[Controlled Difficulty - "$ `CD_BUILD_TYPE $" \""$ `CD_COMMIT_HASH $"\"]\n" $ ChatCommander.GetCDInfoChatString( "brief" ) );
+	BroadcastCDEcho( "[Controlled Difficulty - " $ `CD_BUILD_TYPE $ "]" $ "\n" $ ChatCommander.GetCDInfoChatString( "brief" ) );
 }
 
 private function DisplayDynamicSettingSummaryInChat()
@@ -1583,6 +1968,19 @@ function ECDAuthLevel GetAuthorizationLevelForUser( Actor Sender )
 		}
 	}
 
+	for ( i = 0; i < Moderator.Length; i++ )
+	{
+		if ( Len( Moderator[i].SteamID ) < SteamIdSuffixLength )
+		{
+			continue;
+		}
+
+		if ( Right( Moderator[i].SteamID, SteamIdSuffixLength ) == SteamIdSuffix )
+		{
+			return CDAUTH_WRITE;
+		}
+	}
+	
 	`cdlog("No STEAMID2 auth match found for current user (current nickname: " $ KFPRI.PlayerName $ ")", bLogControlledDifficulty);
 
 	return DefaultAuthLevel;
@@ -1596,9 +1994,9 @@ private function MaybeLoadIniWaveInfos()
 
 		// This doesn't seem to work (am I forcing a SaveConfig() beforehand?)
 		//`cdlog("Forcing a config reload because SpawnCycle="$SpawnCycle$"...", bLogControlledDifficulty);
-		//ConsoleCommand("reloadcfg ControlledDifficulty.CD_Survival", true);
-		//ConsoleCommand("reloadcfg 'ControlledDifficulty.CD_Survival'", true);
-		//ConsoleCommand("reloadcfg \"ControlledDifficulty.CD_Survival\"", true);
+		//ConsoleCommand("reloadcfg ControlledDifficulty_Blackout.CD_Survival", true);
+		//ConsoleCommand("reloadcfg 'ControlledDifficulty_Blackout.CD_Survival'", true);
+		//ConsoleCommand("reloadcfg \"ControlledDifficulty_Blackout.CD_Survival\"", true);
 
 		if ( !SpawnCycleCatalog.ParseIniSquadCycle( SpawnCycleDefs, GameLength, IniWaveInfos ) )
 		{
@@ -1816,17 +2214,60 @@ private function PrintScheduleSlug( string CycleName )
 	}
 }
 
+event UpdateAIRemaining()
+{
+	if ( Role == ROLE_AUTHORITY )
+	{
+		if ( MyKFGRI != None && SpawnManager != none )
+		{
+			RefreshMonsterAliveCount();
+			MyKFGRI.AIRemaining = Max(0.0f, SpawnManager.WaveTotalAI - NumAISpawnsQueued) + AIAliveCount;
+		}
+	}
+}
+
+private function Mutator GetFHUDCompatController()
+{
+	local Mutator M;
+
+	foreach WorldInfo.DynamicActors( class'Mutator', M )
+	{
+		if ( PathName( M.class ) ~= "FriendlyHUD.FriendlyHUDCDCompatController")
+		{
+			return M;
+		}
+	}
+
+	return None;
+}
+
+private function NotifyFHUDReadyState( CD_PlayerController CDPC )
+{
+	local Mutator FHUDCompatController;
+
+	FHUDCompatController = GetFHUDCompatController();
+	
+	if ( FHUDCompatController == None ) return;
+
+	FHUDCompatController.Mutate("FHUDSetCDStateReady" @ CDPC.PlayerReplicationInfo.PlayerID @ CDPC.bIsReadyForNextWave, None);
+}
+
+function bool AllowWaveCheats()
+{
+    return true;
+}
+
 defaultproperties
 {
-	GameConductorClass=class'ControlledDifficulty.CD_DummyGameConductor'
+	GameConductorClass=class'ControlledDifficulty_Blackout.CD_DummyGameConductor'
 
-	DifficultyInfoClass=class'ControlledDifficulty.CD_DifficultyInfo'
+	DifficultyInfoClass=class'ControlledDifficulty_Blackout.CD_DifficultyInfo'
 
-	SpawnManagerClasses(0)=class'ControlledDifficulty.CD_SpawnManager_Short'
-	SpawnManagerClasses(1)=class'ControlledDifficulty.CD_SpawnManager_Normal'
-	SpawnManagerClasses(2)=class'ControlledDifficulty.CD_SpawnManager_Long'
+	SpawnManagerClasses(0)=class'ControlledDifficulty_Blackout.CD_SpawnManager_Short'
+	SpawnManagerClasses(1)=class'ControlledDifficulty_Blackout.CD_SpawnManager_Normal'
+	SpawnManagerClasses(2)=class'ControlledDifficulty_Blackout.CD_SpawnManager_Long'
 
-	PlayerControllerClass=class'ControlledDifficulty.CD_PlayerController'
+	PlayerControllerClass=class'ControlledDifficulty_Blackout.CD_PlayerController'
 
 	Begin Object Class=CD_ConsolePrinter Name=Default_CDCP
 	End Object
@@ -1836,4 +2277,14 @@ defaultproperties
 	SpawnModEpsilon=0.0001
 	SpawnPollEpsilon=0.0001
 	ZTSpawnSlowdownEpsilon=0.0001
+	
+	Moderator.Add((SteamID="STEAM_0:1:89219856",Comment="Moderator"))
+	
+	CDGameModes.Add((FriendlyName="Survival",ClassNameAndPath="KFGameContent.KFGameInfo_Survival",bSoloPlaySupported=True,DifficultyLevels=4,Lengths=4,LocalizeID=0))
+	CDGameModes.Add((FriendlyName="Weekly",ClassNameAndPath="KFGameContent.KFGameInfo_WeeklySurvival",bSoloPlaySupported=True,DifficultyLevels=0,Lengths=0,LocalizeID=1))
+	CDGameModes.Add((FriendlyName="Versus",ClassNameAndPath="KFGameContent.KFGameInfo_VersusSurvival",bSoloPlaySupported=False,DifficultyLevels=0,Lengths=0,LocalizeID=2))
+	CDGameModes.Add((FriendlyName="Endless",ClassNameAndPath="KFGameContent.KFGameInfo_Endless",bSoloPlaySupported=True,DifficultyLevels=4,Lengths=0,LocalizeID=3))
+	CDGameModes.Add((FriendlyName="CDSurvival",ClassNameAndPath="ControlledDifficulty_Blackout.CD_Survival",bSoloPlaySupported=True,DifficultyLevels=4,Lengths=4,LocalizeID=4))
+
+    GameInfoClassAliases.Add((ShortName="CDSurvival", GameClassName="ControlledDifficulty_Blackout.CD_Survival"))
 }

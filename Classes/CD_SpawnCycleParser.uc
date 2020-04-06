@@ -137,7 +137,7 @@ private function CD_AIWaveInfo ParseSpawnCycleDef( const string rawSchedule, con
 	local ESquadType CurElementVolume;
 	local int CurSquadSize;
 
-	CurWaveInfo = new class'ControlledDifficulty.CD_AIWaveInfo';
+	CurWaveInfo = new class'ControlledDifficulty_Blackout.CD_AIWaveInfo';
 
 	// Split on , and drop empty elements
 	SquadDefs = SplitString( rawSchedule, ",", true );
@@ -145,7 +145,7 @@ private function CD_AIWaveInfo ParseSpawnCycleDef( const string rawSchedule, con
 	// Iterate through the squads
 	for ( ParserState.SquadIndex = 0; ParserState.SquadIndex < SquadDefs.length; ParserState.SquadIndex++ )
 	{
-		CurSquad = new class'ControlledDifficulty.CD_AISpawnSquad';
+		CurSquad = new class'ControlledDifficulty_Blackout.CD_AISpawnSquad';
 		CurSquadSize = 0;
 
 		LargestVolumeInSquad = EST_Crawler;

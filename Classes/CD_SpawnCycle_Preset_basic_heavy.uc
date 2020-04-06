@@ -4,7 +4,14 @@ class CD_SpawnCycle_Preset_basic_heavy
 
 function GetShortSpawnCycleDefs( out array<string> sink )
 {
-	sink.length = 0;
+	GetLongSpawnCycleDefs( sink ); 
+
+	// keep waves 1, 4, 7, 10 
+	sink.Remove(1, 2); 
+	sink.Remove(2, 2); 
+	sink.remove(3, 2); 
+	
+	sink.length = 4;
 }
 
 function GetNormalSpawnCycleDefs( out array<string> sink )
@@ -97,3 +104,4 @@ function string GetAuthor()
 {
 	return "blackout + dandyboy";
 }
+

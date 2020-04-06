@@ -195,7 +195,7 @@ private function InitSpawnCyclePresetList()
 	if ( 0 == SpawnCyclePresetList.length )
 	{
 		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_albino_heavy');
-//		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_basic_light');
+		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_basic_light');
 		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_basic_moderate');
 		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_basic_heavy');
 		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_dtf_v1');
@@ -205,11 +205,37 @@ private function InitSpawnCyclePresetList()
 		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_nam_pro_v3');
 		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_nam_pro_v4');
 		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_nam_pro_v5');
+		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_nam_pro_v5_plus');
 		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_nam_semi_pro');
 		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_nam_semi_pro_v2');
 		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_rd_kta');
 		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_rd_odt');
 		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_rd_sam');
+		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_gso_v1');
+		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_asl_v1');
+		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_asl_v2');
+		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_asl_v3');
+		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_pubs_v1');
+		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_ts_mig_v1');
+		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_ts_mig_v2');
+		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_ts_mig_v3');
+		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_ts_mig_v1_p');
+		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_ts_lk313_stg');
+		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_doom_v1');
+		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_doom_v2');
+		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_doom_v2_plus');	
+		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_doom_v2_short');
+		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_grand_v1');
+		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_bl_v1');
+		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_bl_v2');
+		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_osffi_v1');
+		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_doomsday_v1');
+		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_fpp_v1');
+		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_aio_v1');
+		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_aio_v2');
+		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_pro6');
+		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_pro6_plus');
+		SpawnCyclePresetList.AddItem(new class'CD_SpawnCycle_Preset_pro_short');
 	}
 }
 

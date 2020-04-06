@@ -91,6 +91,10 @@ static function ECDZedNameResolv GetZedType(
 	else if ( 2 <= ZedLen && ZedLen <= 7 && ZedName ~= Left("STALKER", ZedLen) )
 	{
 		ZedType = AT_Stalker;
+		ZedClass = IsSpecial ?
+			class'CD_Pawn_ZedStalker_Special' :
+			class'CD_Pawn_ZedStalker_Regular' ;
+		ZedTypeCanBeSpecial = true;
 	}
 	else if ( 1 <= ZedLen && ZedLen <= 5 && ZedName ~= Left("BLOAT", ZedLen) )
 	{
@@ -111,11 +115,30 @@ static function ECDZedNameResolv GetZedType(
 	else if ( 1 <= ZedLen && ZedLen <= 4 && ZedName ~= Left("HUSK", ZedLen) )
 	{
 		ZedType = AT_Husk;
+		ZedClass = IsSpecial ?
+			class'CD_Pawn_ZedHusk_Special' :
+			class'CD_Pawn_ZedHusk_Regular' ;
+		ZedTypeCanBeSpecial = true;
 	}
 	else if ( 2 <= ZedLen && ZedLen <= 5 && ZedName ~= Left("SIREN", ZedLen) )
 	{
 		ZedType = AT_Siren;
 	}
+	else if ( ZedName ~= "TR" || ZedName ~= "Trapper" || ZedName ~= "DE" || 4 <= ZedLen && ZedLen <= 6 && ZedName ~= Left("DAREMP", ZedLen) )
+    {
+		ZedType = AT_EDAR_EMP;
+        ZedClass = class'KFPawn_ZedDAR_EMP';
+    }
+    else if ( ZedName ~= "BO" || ZedName ~= "Boomer" || ZedName ~= "DR" || 4 <= ZedLen && ZedLen <= 9 && ZedName ~= Left("DARROCKET", ZedLen) )
+    {
+		ZedType = AT_EDAR_Rocket;
+        ZedClass = class'KFPawn_ZedDAR_Rocket';
+    }
+    else if ( ZedName ~= "BA" || ZedName ~= "Blaster" || ZedName ~= "DL" || 4 <= ZedLen && ZedLen <= 8 && ZedName ~= Left("DARLASER", ZedLen) )
+    {
+		ZedType = AT_EDAR_Laser;
+        ZedClass = class'KFPawn_ZedDAR_Laser';
+    }
 	else
 	{
 		return ZNR_INVALID_NAME;
@@ -188,6 +211,18 @@ static function GetZedFullName( const AISquadElement SquadElement, out string Ze
 	{
 		ZedName = "Siren";
 	}
+	else if ( SquadElement.Type == AT_EDAR_EMP )
+    {
+        ZedName = "Trapper";
+    }
+    else if ( SquadElement.Type == AT_EDAR_Rocket )
+    {
+        ZedName = "Boomer";
+    }
+    else if ( SquadElement.Type == AT_EDAR_Laser )
+    {
+        ZedName = "Blaster";
+    }
 
 	AppendModifierChars( SquadElement.CustomClass, ZedName );
 }
@@ -244,6 +279,18 @@ static function GetZedTinyName( const AISquadElement SquadElement, out string Ze
 	{
 		ZedName = "SI";
 	}
+	else if (  SquadElement.Type == AT_EDAR_EMP  )
+    {
+        ZedName = "DE";
+    }
+    else if (  SquadElement.Type == AT_EDAR_Rocket  )
+    {
+        ZedName = "DR";
+    }
+    else if (  SquadElement.Type == AT_EDAR_Laser  )
+    {
+        ZedName = "DL";
+    }
 
 	AppendModifierChars( SquadElement.CustomClass, ZedName );
 }
@@ -300,6 +347,18 @@ static function GetZedShortName( const AISquadElement SquadElement, out string Z
 	{
 		ZedName = "SI";
 	}
+	else if ( SquadElement.Type == AT_EDAR_EMP )
+    {
+        ZedName = "TR";
+    }
+    else if ( SquadElement.Type == AT_EDAR_Rocket )
+    {
+        ZedName = "BO";
+    }
+    else if ( SquadElement.Type == AT_EDAR_Laser )
+    {
+        ZedName = "BA";
+    }
 
 	AppendModifierChars( SquadElement.CustomClass, ZedName );
 }
@@ -377,6 +436,16 @@ static function class<KFPawn_Monster> CheckMonsterClassRemap( const class<KFPawn
 	          OrigClass == class'CD_Pawn_ZedGorefast_Regular' )
 	{
 		NewClass = class'KFPawn_ZedGorefast';
+	}
+	else if ( OrigClass == class'CD_Pawn_ZedStalker_Special' ||
+	          OrigClass == class'CD_Pawn_ZedStalker_Regular' )
+	{
+		NewClass = class'KFPawn_ZedStalker';
+	}
+	else if ( OrigClass == class'CD_Pawn_ZedHusk_Special' ||
+	          OrigClass == class'CD_Pawn_ZedHusk_Regular' )
+	{
+		NewClass = class'KFPawn_ZedHusk';
 	}
 	else if ( OrigClass == class'CD_Pawn_ZedFleshpound_NRS' ||
 	          OrigClass == class'CD_Pawn_ZedFleshpound_RS' )

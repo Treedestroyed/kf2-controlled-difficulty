@@ -60,11 +60,15 @@ function Update()
 		SpawnSquadResult = SpawnSquad( SpawnList );
 		NumAISpawnsQueued += SpawnSquadResult;
 		CohortZedsSpawned += SpawnSquadResult;
+		
+		UpdateAIRemaining();
+		
 		if ( 0 == SpawnSquadResult || 0 >= Outer.CohortSizeInt )
 		{
 			CohortSaturated = true;
 			break;
 		}
+		
 		CohortSquadsSpawned += 1;
 	}
 
@@ -758,6 +762,11 @@ function GetSpawnListFromSquad(byte SquadIdx, out array< KFAISpawnSquad > Squads
 						`cdlog("Spawning King Bloat (config: Boss="$Outer.BossEnum$")", bLogControlledDifficulty);
 						TempSpawnList.AddItem(AIBossClassList[BAT_KingBloat]);
 					}
+					else if ( BossEnum == CDBOSS_MATRIARCH  )
+					{
+						`cdlog("Spawning Matriarch (config: Boss="$Outer.BossEnum$")", bLogControlledDifficulty);
+						TempSpawnList.AddItem(AIBossClassList[BAT_Matriarch]);
+					}
 					else
 					{
 						`cdlog("Spawning a random boss (config: Boss="$Outer.BossEnum$")", bLogControlledDifficulty);
@@ -812,9 +821,9 @@ function GetSpawnListFromSquad(byte SquadIdx, out array< KFAISpawnSquad > Squads
 		// Replace all standard crawler classes with forced-regular crawers
 		MatchClasses.Length = 2;
 		MatchClasses[0] = AIClassList[AT_Crawler];
-		MatchClasses[1] = class'ControlledDifficulty.CD_Pawn_ZedCrawler_Special';
+		MatchClasses[1] = class'ControlledDifficulty_Blackout.CD_Pawn_ZedCrawler_Special';
 		ReplaceZedClass( MatchClasses,
-		                 class'ControlledDifficulty.CD_Pawn_ZedCrawler_Regular',
+		                 class'ControlledDifficulty_Blackout.CD_Pawn_ZedCrawler_Regular',
 		                 AISpawnList );
 	}
 
@@ -824,9 +833,9 @@ function GetSpawnListFromSquad(byte SquadIdx, out array< KFAISpawnSquad > Squads
 		// Replace all standard alpha classes with forced-regular alphas
 		MatchClasses.Length = 2;
 		MatchClasses[0] = AIClassList[AT_AlphaClot];
-		MatchClasses[1] = class'ControlledDifficulty.CD_Pawn_ZedClot_Alpha_Special';
+		MatchClasses[1] = class'ControlledDifficulty_Blackout.CD_Pawn_ZedClot_Alpha_Special';
 		ReplaceZedClass( MatchClasses,
-		                 class'ControlledDifficulty.CD_Pawn_ZedClot_Alpha_Regular',
+		                 class'ControlledDifficulty_Blackout.CD_Pawn_ZedClot_Alpha_Regular',
 		                 AISpawnList );
 	}
 	else
@@ -839,7 +848,7 @@ function GetSpawnListFromSquad(byte SquadIdx, out array< KFAISpawnSquad > Squads
 		MatchClasses.Length = 1;
 		MatchClasses[0] = AIClassList[AT_AlphaClot];
 		ReplaceZedClass( MatchClasses,
-		                 class'ControlledDifficulty.CD_Pawn_ZedClot_Alpha',
+		                 class'ControlledDifficulty_Blackout.CD_Pawn_ZedClot_Alpha',
 		                 AISpawnList );
 	}
 
@@ -850,12 +859,38 @@ function GetSpawnListFromSquad(byte SquadIdx, out array< KFAISpawnSquad > Squads
 		// Replace all standard gorefast classes with forced-regular gorefasts
 		MatchClasses.Length = 2;
 		MatchClasses[0] = AIClassList[AT_GoreFast];
-		MatchClasses[1] = class'ControlledDifficulty.CD_Pawn_ZedGorefast_Special';
+		MatchClasses[1] = class'ControlledDifficulty_Blackout.CD_Pawn_ZedGorefast_Special';
 		ReplaceZedClass( MatchClasses,
-		                 class'ControlledDifficulty.CD_Pawn_ZedGorefast_Regular',
+		                 class'ControlledDifficulty_Blackout.CD_Pawn_ZedGorefast_Regular',
 		                 AISpawnList );
 	}
 
+	if ( !AlbinoStalkersBool )
+	{
+		`cdlog("AlbinoStalkers="$AlbinoStalkersBool$": scanning AISpawnList of length "$AISpawnList.Length$" at squadidx "$SquadIdx, bLogControlledDifficulty);
+
+		// Replace all standard stalker classes with forced-regular stalkers
+		MatchClasses.Length = 2;
+		MatchClasses[0] = AIClassList[AT_Stalker];
+		MatchClasses[1] = class'ControlledDifficulty_Blackout.CD_Pawn_ZedStalker_Special';
+		ReplaceZedClass( MatchClasses,
+		                 class'ControlledDifficulty_Blackout.CD_Pawn_ZedStalker_Regular',
+		                 AISpawnList );
+	}
+	
+	if ( !AlbinoHusksBool )
+	{
+		`cdlog("AlbinoHusks="$AlbinoHusksBool$": scanning AISpawnList of length "$AISpawnList.Length$" at squadidx "$SquadIdx, bLogControlledDifficulty);
+
+		// Replace all standard husk classes with forced-regular husks
+		MatchClasses.Length = 2;
+		MatchClasses[0] = AIClassList[AT_Husk];
+		MatchClasses[1] = class'ControlledDifficulty_Blackout.CD_Pawn_ZedHusk_Special';
+		ReplaceZedClass( MatchClasses,
+		                 class'ControlledDifficulty_Blackout.CD_Pawn_ZedHusk_Regular',
+		                 AISpawnList );
+	}
+	
 	if ( !FleshpoundRageSpawnsBool )
 	{
 		`cdlog("FleshpoundRageSpawns="$FleshpoundRageSpawnsBool$": scanning AISpawnList of length "$AISpawnList.Length$" at squadidx "$SquadIdx, bLogControlledDifficulty);
@@ -863,17 +898,17 @@ function GetSpawnListFromSquad(byte SquadIdx, out array< KFAISpawnSquad > Squads
 		// Replace all standard fleshpound classes with forced-lazy fleshpounds
 		MatchClasses.Length = 2;
 		MatchClasses[0] = AIClassList[AT_FleshPound];
-		MatchClasses[1] = class'ControlledDifficulty.CD_Pawn_ZedFleshpound_RS';
+		MatchClasses[1] = class'ControlledDifficulty_Blackout.CD_Pawn_ZedFleshpound_RS';
 		ReplaceZedClass( MatchClasses,
-		                 class'ControlledDifficulty.CD_Pawn_ZedFleshpound_NRS',
+		                 class'ControlledDifficulty_Blackout.CD_Pawn_ZedFleshpound_NRS',
 		                 AISpawnList );
 
 		// Same, but for minis
 		MatchClasses.Length = 2;
 		MatchClasses[0] = AIClassList[AT_FleshpoundMini];
-		MatchClasses[1] = class'ControlledDifficulty.CD_Pawn_ZedFleshpoundMini_RS';
+		MatchClasses[1] = class'ControlledDifficulty_Blackout.CD_Pawn_ZedFleshpoundMini_RS';
 		ReplaceZedClass( MatchClasses,
-		                 class'ControlledDifficulty.CD_Pawn_ZedFleshpoundMini_NRS',
+		                 class'ControlledDifficulty_Blackout.CD_Pawn_ZedFleshpoundMini_NRS',
 		                 AISpawnList );
 	}
 }
