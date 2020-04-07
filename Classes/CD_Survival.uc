@@ -2280,11 +2280,7 @@ defaultproperties
 	
 	Moderator.Add((SteamID="STEAM_0:1:89219856",Comment="Moderator"))
 	
-	CDGameModes.Add((FriendlyName="Survival",ClassNameAndPath="KFGameContent.KFGameInfo_Survival",bSoloPlaySupported=True,DifficultyLevels=4,Lengths=4,LocalizeID=0))
-	CDGameModes.Add((FriendlyName="Weekly",ClassNameAndPath="KFGameContent.KFGameInfo_WeeklySurvival",bSoloPlaySupported=True,DifficultyLevels=0,Lengths=0,LocalizeID=1))
-	CDGameModes.Add((FriendlyName="Versus",ClassNameAndPath="KFGameContent.KFGameInfo_VersusSurvival",bSoloPlaySupported=False,DifficultyLevels=0,Lengths=0,LocalizeID=2))
-	CDGameModes.Add((FriendlyName="Endless",ClassNameAndPath="KFGameContent.KFGameInfo_Endless",bSoloPlaySupported=True,DifficultyLevels=4,Lengths=0,LocalizeID=3))
-	CDGameModes.Add((FriendlyName="CDSurvival",ClassNameAndPath="ControlledDifficulty_Blackout.CD_Survival",bSoloPlaySupported=True,DifficultyLevels=4,Lengths=4,LocalizeID=4))
+	CDGameModes.Add((FriendlyName="CD_Survival",ClassNameAndPath="ControlledDifficulty_Blackout.CD_Survival",bSoloPlaySupported=True,DifficultyLevels=4,Lengths=4,LocalizeID=0))
 
-    GameInfoClassAliases.Add((ShortName="CDSurvival", GameClassName="ControlledDifficulty_Blackout.CD_Survival"))
+    	GameInfoClassAliases.Add((ShortName="CD_Survival", GameClassName="ControlledDifficulty_Blackout.CD_Survival"))
 }
